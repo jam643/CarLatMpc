@@ -1,5 +1,5 @@
 function carNonlinDynamics()
-t_end = 20;
+t_end = 10;
 fps = 100;
 N = t_end*fps;
 t_array = linspace(0, t_end, N);
@@ -31,7 +31,7 @@ grid on;
 % set(gcf,'Renderer','opengl');
 axis([0,20,0,20]);
 car_handle = fill(0,0,[0.5,0.5,0.5]);
-track_handle = plot(0,0,'k');
+track_handle = plot(0,0,':k');
 w = 1;
 chassis = [-param.lr, param.lf, param.lf, -param.lr;
             w, w, -w, -w];
