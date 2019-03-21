@@ -5,6 +5,7 @@ classdef MpcObj
         P_inv
         P
         p
+        options
         f_1
     end
     methods
@@ -17,6 +18,7 @@ classdef MpcObj
             obj.f_1 = obj.H'*Q_rep;
             obj.P_inv = inv(obj.P);
             obj.p = size(B,2);
+            obj.options = optimset('Algorithm','active-set','Display','off');
         end
         function [H,G] = predictMats(~,A,B,C,N_pred)
             q = size(C,1);
@@ -42,13 +44,15 @@ classdef MpcObj
             U = -obj.P_inv*f;
             U = reshape(U,obj.p,[]);
         end
-        function U = solveConstrained(obj,x0,Yr,A,B,Aeq,Beq,lb,ub)
+        function [U,solveTime] = solveConstrained(obj,x0,Yr,A,B,Aeq,Beq,lb,ub)
+            tic
             Yr = Yr(:);
             lb = lb(:);
             ub = ub(:);
             f = obj.f_1*(obj.G*x0 - Yr);
-            U = quadprog(obj.P,f,A,B,Aeq,Beq,lb,ub);
+            U = quadprog(obj.P,f,A,B,Aeq,Beq,lb,ub,[],obj.options);
             U = reshape(U,obj.p,[]);
+            solveTime = toc;
         end
     end
 end
